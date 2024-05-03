@@ -6,6 +6,8 @@ from .models import student, teacher
 
 def home(request):
     students = student.objects.all()
+    teachers = teacher.objects.all()
+    
     # Check to see if logging in
     if request.method == 'POST':
         username = request.POST['username']
@@ -20,9 +22,9 @@ def home(request):
             messages.success(request, "There Was An Error Logging In, Please Try Again...")
             return redirect('home')
     else:
-        return render(request, 'home.html', {'students': students})
+        return render(request, 'home.html', {'students': students, 'teachers': teachers}) 
 
-def login_user(request):
+def login_user(request): 
     pass
 
 def logout_user(request):
@@ -93,3 +95,29 @@ def add_teacher(request):
         form = AddTeacherForm()
 
     return render(request, 'add_teacher.html', {'form': form})
+
+def update_teacher(request, pk):
+    if request.user.is_authenticated:
+        current_teacher = teacher.objects.get(id=pk)
+        form = AddTeacherForm(request.POST or None, instance=current_teacher)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Record Has Been Updated!")
+            return redirect('home')
+        return render(request, 'update_teacher.html', {'form': form, 'teacher_record': current_teacher})
+    else:
+        messages.success(request, "You Must Be Logged In...")
+        return redirect('home')
+    
+def delete_teacher(request, pk):
+	if request.user.is_authenticated:
+		delete_it = teacher.objects.get(id=pk)
+		delete_it.delete()
+		messages.success(request, "student Deleted Successfully...")
+		return redirect('home')
+	else:
+		messages.success(request, "You Must Be Logged In To Do That...")
+		return redirect('home')
+     
+def sort_classes(request):
+    return render(request, 'sort_classes.html', {})
