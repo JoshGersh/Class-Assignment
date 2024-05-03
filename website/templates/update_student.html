@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card">
+  <div class="card-header"><strong>Student Record</strong></div>
+  <div class="card-body">
+    <div class="form-group">
+      <form method="POST" >
+        {% csrf_token %}
+    
+        {{ form.as_p }}
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<br/><br/>
+<a href="{% url 'home' %}" class="btn btn-secondary">Back</a>
+<a href="{% url 'delete_student' student_record.id %}" class="btn btn-danger">Delete</a>
+{% endblock %}
